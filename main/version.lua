@@ -1,1 +1,1 @@
-lib.versionCheck('alp1x/um-idcard')
+lib.versionCheck('Qbox-project/qbx_idcard')
