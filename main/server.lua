@@ -1,9 +1,11 @@
+local sharedConfig = require 'config.shared'
+
 RegisterNetEvent('um-idcard:server:sendData', function(src,metadata)
     if metadata.mugShot ~= 'none' then
         lib.callback('um-idcard:client:callBack:getClosestPlayer', src, function(player)
             if player ~= 0 then
                 TriggerClientEvent('um-idcard:client:notifyOx', src, {
-                    title = 'You showed your idcard', 
+                    title = 'You showed your idcard',
                     desc = 'You are showing your ID Card to the closest player',
                     icon = 'id-card',
                     iconColor = 'green'
@@ -18,6 +20,6 @@ RegisterNetEvent('um-idcard:server:sendData', function(src,metadata)
     end
 end)
 
-for k,_ in pairs(Config.Licenses) do
+for k,_ in pairs(sharedConfig.licenses) do
     CreateRegisterItem(k)
 end

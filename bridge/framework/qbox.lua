@@ -1,6 +1,7 @@
 if GetResourceState('qbx_core') ~= 'started' then return end
 
 local metadata = {}
+local sharedConfig = require 'config.shared'
 
 --- Convert sex number to string M or F
 ---@param sex number
@@ -14,11 +15,11 @@ end
 ---@param itemName string
 ---@return string | table
 local function GetBadge(src, itemName)
-    if not Config.Licenses[itemName].badge then return 'none' end
+    if not sharedConfig.licenses[itemName].badge then return 'none' end
 
     local player = exports.qbx_core:GetPlayer(src)
     return {
-        img = Config.Licenses[itemName].badge,
+        img = sharedConfig.licenses[itemName].badge,
         grade = player.PlayerData.job.grade.name
     }
 end

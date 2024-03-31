@@ -16,7 +16,7 @@ dependencies {
 
 shared_scripts {
 	'@ox_lib/init.lua',
-	'config.lua'
+	'config/shared.lua'
 }
 
 client_script 'main/client.lua'
