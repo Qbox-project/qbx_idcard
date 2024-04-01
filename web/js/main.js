@@ -1,7 +1,6 @@
 import { fetchNui } from './fetchNui.js';
 import { Global } from '../../lang/global.js';
-
-let config;
+import config from './config.js';
 
 /**
  * Get element by id
@@ -42,7 +41,7 @@ const closeFunction = () => {
  * @param playerData {Object}
  **/
 const openIdCard = (playerData) => {
-  const license = sharedConfig.licenses[playerData.cardtype];
+  const license = config.licenses[playerData.cardtype];
   const elements = {
     lastname: playerData.lastname,
     name: playerData.firstname,
