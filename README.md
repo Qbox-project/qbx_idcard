@@ -6,10 +6,9 @@
 
 
 <p align="center">
-<img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324949227327529/identity.png">
-<img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324948942106674/driverlicense.png">
-<img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324949466394684/lawyerpass.png">
-<img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324949692878869/weapon_license.png"><br>
+<img width="180" height="110" src="https://media.discordapp.net/attachments/711827512274976819/1224271438530215976/idcard.png?ex=661ce2a0&is=660a6da0&hm=b1f609fe207292a6fb0b7422bec56d00ffa6402dbdcf42cc64742b9a2f7a8f6a&=&format=webp&quality=lossless">
+<img width="180" height="110" src="https://media.discordapp.net/attachments/711827512274976819/1224271438278688788/driver.png?ex=661ce2a0&is=660a6da0&hm=de051ec58b88adb9f2d32d894cd4255dddf017e2f240b11463ade3aba50ceff8&=&format=webp&quality=lossless">
+<img width="180" height="110" src="https://media.discordapp.net/attachments/711827512274976819/1224271438744387604/weapon.png?ex=661ce2a0&is=660a6da0&hm=f4fbe671a64474cddd22966f6e82a98b30949303b2104f53c4a2c46e16c90191&=&format=webp&quality=lossless"><br>
 </p>
 
 ### Usage
