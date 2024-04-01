@@ -74,8 +74,6 @@ end)
 -- Loaded
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function() sendConfigData() end)
 
-RegisterNetEvent('esx:playerLoaded', function() sendConfigData() end)
-
 AddEventHandler('onResourceStart', function(resourceName)
     if GetCurrentResourceName() ~= resourceName then return end
     dataReady = true
