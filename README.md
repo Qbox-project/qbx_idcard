@@ -10,16 +10,7 @@
 <img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324948942106674/driverlicense.png">
 <img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324949466394684/lawyerpass.png">
 <img width="180" height="110" src="https://cdn.discordapp.com/attachments/1016069609897595011/1093324949692878869/weapon_license.png"><br>
- <sup><b>qb-idcard</b> has been updated and renamed as <b>um-idcard</b>, and it is now compatible with <b>ESX</b> and </b><b>QBCore</b> and <b>Qbox</b></sup>
 </p>
-
-
-### Setup
-* Make sure you have the items in **sharedConfig.licenses**, otherwise add them.
-* After **[ox_lib](https://github.com/overextended/ox_lib/releases)** and **[MugShotBase64](https://github.com/BaziForYou/MugShotBase64)**
-* `ensure um-idcard` or `ensure [um] folder`
-* 📄 **[QBCore Starter Setup](https://alp1x.github.io/um-idcard/Starter%20Setup/qbcore)**
-* 📄 **[ESX Starter Setup](https://alp1x.github.io/um-idcard/Starter%20Setup/esx)**
 
 ### Usage
 * Just use the item
@@ -34,11 +25,6 @@
 
 ### Optional
 * **[um-idcard-menu](https://github.com/alp1x/um-idcard-menu)**
-
-### Inventory
-* **[ox_inventory](https://github.com/overextended/ox_inventory/releases)** (ESX or QBCore)
-* **[qb-inventory or lj-inventory ](https://github.com/qbcore-framework/qb-inventory)** (QBCore)
-
 
 
 ## Contributors
