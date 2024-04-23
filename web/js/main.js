@@ -58,6 +58,7 @@ const openIdCard = (playerData) => {
 
   getElementById('mugshot').src = playerData.mugShot;
   getElementById('smallmugshot').src = playerData.mugShot;
+  getElementById('um-idcard').style.backgroundImage = `url(${license.backgroundImage})`;
   getElementById('um-idcard').style.backgroundColor = license.background;
   getElementById('um-idcard').classList.add('animate__animated', 'animate__fadeInLeft', 'animate__faster');
   setBadgeVisibility(playerData.badge);
