@@ -76,7 +76,7 @@ window.addEventListener('message', (event) => {
   if (type === 'playerData') {
     openIdCard(playerData);
   } else if (type === 'configData') {
-    config = configData;
+    Object.assign(config, configData);
   }
 });
 
