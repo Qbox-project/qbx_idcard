@@ -68,7 +68,7 @@ local function GetMetaLicense(src, itemTable)
     end
 
     if type(itemTable) == "table" then
-        for _, v in pairs(itemTable) do
+        for _, v in pairs(itemTable) do --luacheck: ignore
             metadata = {
                 cardtype = v,
                 citizenid = player.PlayerData.citizenid,

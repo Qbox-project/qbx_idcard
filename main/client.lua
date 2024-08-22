@@ -23,7 +23,7 @@ end
 
 -- Send config data to the nui
 local function sendConfigData()
-    SendNUIMessage({type = 'configData', configData = Config})
+    SendNUIMessage({type = 'configData', configData = sharedConfig})
 end
 
 -- Events

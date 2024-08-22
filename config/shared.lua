@@ -1,5 +1,5 @@
 return {
-    
+
     idCardSettings = {
         closeKey = 'Backspace',
         autoClose = {

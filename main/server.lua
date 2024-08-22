@@ -4,7 +4,7 @@ local ox_inventory = exports.ox_inventory
 
 function NewMetaDataLicense(src, itemName)
     local newMetaDataItem = ox_inventory:Search(src, 1, itemName)
-    for _, v in pairs(newMetaDataItem) do
+    for _, v in pairs(newMetaDataItem) do --luacheck: ignore
         newMetaDataItem = v
         break
     end
