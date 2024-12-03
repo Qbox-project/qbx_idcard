@@ -36,7 +36,7 @@ local function CreateMetaLicense(src, itemTable)
 
     if type(itemTable) == "table" then
         for _, v in pairs(itemTable) do
-            metadata = {
+            local metadata = {
                 cardtype = v,
                 citizenid = player.PlayerData.citizenid,
                 firstname = player.PlayerData.charinfo.firstname,
@@ -44,7 +44,6 @@ local function CreateMetaLicense(src, itemTable)
                 birthdate = player.PlayerData.charinfo.birthdate,
                 sex =  GetStringSex(player.PlayerData.charinfo.gender),
                 nationality = player.PlayerData.charinfo.nationality,
-                mugShot = 'none',
                 badge = GetBadge(src, v)
             }
 
@@ -69,7 +68,7 @@ local function GetMetaLicense(src, itemTable)
 
     if type(itemTable) == "table" then
         for _, v in pairs(itemTable) do --luacheck: ignore
-            metadata = {
+            local metadata = {
                 cardtype = v,
                 citizenid = player.PlayerData.citizenid,
                 firstname = player.PlayerData.charinfo.firstname,
@@ -77,7 +76,6 @@ local function GetMetaLicense(src, itemTable)
                 birthdate = player.PlayerData.charinfo.birthdate,
                 sex =  GetStringSex(player.PlayerData.charinfo.gender),
                 nationality = player.PlayerData.charinfo.nationality,
-                mugShot = 'none',
                 badge = GetBadge(src,v)
             }
             return metadata
@@ -93,6 +91,6 @@ exports('GetMetaLicense', GetMetaLicense)
 ---@param k string item name
 function CreateRegisterItem(k)
     exports.qbx_core:CreateUseableItem(k, function(source, item)
-        TriggerEvent('um-idcard:server:sendData', source, item.info or item.metadata)
+        TriggerEvent('um-idcard:server:sendData', source, k, item.info or item.metadata)
     end)
 end
