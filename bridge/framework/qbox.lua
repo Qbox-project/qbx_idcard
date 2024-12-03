@@ -1,6 +1,5 @@
 if GetResourceState('qbx_core') ~= 'started' then return end
 
-local metadata = {}
 local sharedConfig = require 'config.shared'
 
 --- Convert sex number to string M or F
