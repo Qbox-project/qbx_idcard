@@ -12,8 +12,10 @@ function NewMetaDataLicense(src, itemName)
     ox_inventory:SetMetadata(src, newMetaDataItem.slot, newMetaDataItem.metadata)
 end
 
-RegisterNetEvent('um-idcard:server:sendData', function(src,metadata)
-    if metadata.mugShot ~= 'none' then
+RegisterNetEvent('um-idcard:server:sendData', function(src, item, metadata)
+    if metadata.mugShot then
+        local source = src
+
         lib.callback('um-idcard:client:callBack:getClosestPlayer', src, function(player)
             if player ~= 0 then
                 TriggerClientEvent('um-idcard:client:notifyOx', src, {
@@ -22,13 +24,21 @@ RegisterNetEvent('um-idcard:server:sendData', function(src,metadata)
                     icon = 'id-card',
                     iconColor = 'green'
                 })
+
                 src = player
             end
-            TriggerClientEvent('um-idcard:client:sendData', src, metadata)
+
+            local data = exports.qbx_core:GetPlayer(source).PlayerData.charinfo
+            data.sex = data.gender == 0 and 'Male' or 'Female' -- Resolve gender being int
+            data.cardtype = item or "id_card" -- Define card type default if not found
+            data.mugShot = metadata.mugShot -- Append mugshot to data obj
+
+            TriggerClientEvent('um-idcard:client:sendData', src, data)
         end)
-        TriggerClientEvent('um-idcard:client:startAnim', src, metadata.cardtype)
+
+        TriggerClientEvent('um-idcard:client:startAnim', src, item)
     else
-        NewMetaDataLicense(src,metadata.cardtype)
+        NewMetaDataLicense(src, item)
     end
 end)
 
