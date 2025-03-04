@@ -83,3 +83,11 @@ AddEventHandler('onResourceStart', function(resourceName)
         dataReady = false
      end)
 end)
+
+exports.ox_inventory:displayMetadata({
+    firstname = 'Firstname',
+    lastname = 'Lastname',
+    nationality = 'Nationality',
+    birthdate = 'Birthdate',
+    citizenid = 'eID'
+})
