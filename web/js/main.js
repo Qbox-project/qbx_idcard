@@ -45,7 +45,8 @@ const openIdCard = (playerData) => {
   const elements = {
     lastname: playerData.lastname,
     name: playerData.firstname,
-    sign: `${playerData.lastname} ${playerData.firstname}`,
+    citizenid: playerData.citizenid,
+    sign: `${playerData.firstname} ${playerData.lastname}`,
     dob: playerData.birthdate,
     sex: playerData.sex,
     nationality: playerData.nationality,
