@@ -73,6 +73,7 @@ local function sendData(src, item, metadata)
 
             local charinfo = player.PlayerData.charinfo
             TriggerClientEvent('um-idcard:client:sendData', target, {
+                citizenid = player.PlayerData.citizenid,
                 firstname = charinfo.firstname,
                 lastname = charinfo.lastname,
                 birthdate = charinfo.birthdate,
