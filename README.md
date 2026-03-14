@@ -25,6 +25,26 @@
 ### Optional
 * **[um-idcard-menu](https://github.com/alp1x/um-idcard-menu)**
 
+## Card items (ox_inventory)
+Add the following to your `ox_inventory/data/items.lua`.
+
+```lua
+['id_card'] = {
+    label = 'Identification Card',
+},
+
+['driver_license'] = {
+    label = 'Drivers License',
+},
+
+['weaponlicense'] = {
+    label = 'Weapon License',
+},
+
+['lawyerpass'] = {
+    label = 'Lawyer Pass',
+},
+```
 
 ## Contributors
 <a href="https://github.com/alp1x/um-idcard/graphs/contributors">
