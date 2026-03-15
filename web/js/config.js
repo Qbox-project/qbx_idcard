@@ -10,7 +10,7 @@ const config = {
     licenses: {
         'id_card': {
             header: 'Identity',
-            background: '#ebf7fd',            
+            background: '#ebf7fd',
             backgroundImage: 'https://i.ibb.co/vxvGzg1/card.png',
             prop: 'prop_franklin_dl'
         },
