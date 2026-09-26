@@ -21,6 +21,9 @@ local function newMetaDataLicense(src, itemName)
     local mugShot = lib.callback.await('um-idcard:client:callBack:getMugShot', src)
     if not isValidMugShot(mugShot) then return end
 
+    inventoryItem = ox_inventory:GetSlot(src, inventoryItem.slot)
+    if not inventoryItem or inventoryItem.name ~= itemName then return end
+
     local metadata = inventoryItem.metadata or {}
     metadata.mugShot = mugShot
     ox_inventory:SetMetadata(src, inventoryItem.slot, metadata)
@@ -30,7 +33,9 @@ end
 ---@param target number
 ---@return boolean
 local function isNearbyPlayer(src, target)
-    if target <= 0 or target == src or not GetPlayerName(target) then return false end
+    if math.type(target) ~= 'integer' or target <= 0 or target == src or not GetPlayerName(target) then return false end
+
+    if GetPlayerRoutingBucket(src) ~= GetPlayerRoutingBucket(target) then return false end
 
     local playerPed = GetPlayerPed(src)
     local targetPed = GetPlayerPed(target)
