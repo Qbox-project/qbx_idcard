@@ -1,40 +1,52 @@
 fx_version 'cerulean'
 game 'gta5'
+use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 
 name 'qbx_idcard'
-author 'uyuyorum {um}'
+description 'Physical ID cards and licenses shown in hand'
 version '1.0.0'
-license 'GPL-3.0 license'
-repository 'https://github.com/alp1x/um-idcard'
-description 'FiveM Identity Card for QBox'
-
-dependencies {
-	'ox_lib',
-	'MugShotBase64'
-}
-
-shared_scripts {
-	'@ox_lib/init.lua',
-	'config/shared.lua'
-}
-
-client_script 'main/client.lua'
-
-server_scripts {
-	'@oxmysql/lib/MySQL.lua',
-	'bridge/**/*.lua',
-	'main/server.lua',
-	'main/version.lua',
-}
 
 ui_page 'web/index.html'
+nui_callback_strict_mode 'true'
+
+ox_lib 'locale'
+
+shared_scripts {
+    '@ox_lib/init.lua',
+}
+
+client_scripts {
+    'client/main.lua',
+}
+
+server_scripts {
+    '@oxmysql/lib/MySQL.lua',
+    'server/init.lua',
+    'server/main.lua',
+}
 
 files {
-	'web/index.html',
-	'web/css/style.css',
-	'web/flags/*.png',
-	'lang/global.js',
-	'web/js/*.js',
-	'web/badges/*.png',
+    'configs/shared.lua',
+    'configs/client.lua',
+    'locales/*.json',
+    'bridge/client.lua',
+    'client/modules/*.lua',
+    'web/index.html',
+    'web/photo.js',
+    'web/card.html',
+    'web/card.css',
+    'web/card.js',
+    'web/fonts/*',
+    'web/images/*.png',
+    'stream/qbx_idcard.ytyp',
+}
+
+data_file 'DLC_ITYP_REQUEST' 'stream/qbx_idcard.ytyp'
+
+dependencies {
+    'ox_lib',
+    'oxmysql',
+    'qbx_core',
+    'ox_inventory',
 }

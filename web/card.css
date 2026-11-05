@@ -1,0 +1,550 @@
+@font-face {
+  font-family: 'Geist';
+  src: url('fonts/geist.woff2') format('woff2');
+  font-weight: 100 900;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('fonts/commit-mono.woff2') format('woff2');
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: 'Commit Mono';
+  src: url('fonts/commit-mono-700.woff2') format('woff2');
+  font-weight: 700;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 1024px;
+  height: 1346px;
+  overflow: hidden;
+  background: #141414;
+}
+
+#texture {
+  position: relative;
+  width: 1024px;
+  height: 1346px;
+  --ink: #141414;
+  --accent: #4da3ff;
+  --accent-soft: rgba(77, 163, 255, 0.32);
+  --print: #20252c;
+  --tx: 0;
+  --ty: 0;
+  --glare: 0.15;
+}
+
+#texture[data-theme='driver'] {
+  --accent: #ffa347;
+  --accent-soft: rgba(255, 163, 71, 0.35);
+}
+
+#texture[data-theme='weapon'] {
+  --accent: #ff3b3b;
+  --accent-soft: rgba(237, 28, 36, 0.38);
+}
+
+#texture[data-theme='lawyer'] {
+  --accent: #e2be84;
+  --accent-soft: rgba(226, 190, 132, 0.35);
+}
+
+.face {
+  position: absolute;
+  left: 0;
+  width: 1024px;
+  height: 646px;
+  overflow: hidden;
+  font-family: 'Geist', 'Segoe UI', Arial, sans-serif;
+}
+
+#front {
+  top: 0;
+  color: #fff;
+  background:
+    radial-gradient(90% 80% at 100% 0%, var(--accent-soft) 0%, transparent 60%),
+    radial-gradient(70% 60% at 0% 100%, rgba(255, 255, 255, 0.05) 0%, transparent 60%),
+    linear-gradient(160deg, #1d1d1d 0%, #141414 55%, #0d0d0d 100%);
+}
+
+#back {
+  top: 673px;
+  color: var(--print);
+  background:
+    radial-gradient(90% 90% at 100% 100%, var(--accent-soft) 0%, transparent 65%),
+    linear-gradient(180deg, #f5f3ee 0%, #ece9e2 100%);
+}
+
+#edge {
+  position: absolute;
+  left: 0;
+  top: 1326px;
+  width: 1024px;
+  height: 20px;
+  background: #1a1a1a;
+}
+
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
+  -webkit-mask: linear-gradient(200deg, #000 0%, rgba(0, 0, 0, 0.4) 55%, transparent 90%);
+}
+
+.security {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--accent);
+  opacity: 0.08;
+  pointer-events: none;
+}
+
+#back .security {
+  opacity: 0.16;
+}
+
+.watermark {
+  position: absolute;
+  right: -60px;
+  bottom: -80px;
+  width: 440px;
+  height: 440px;
+  color: #fff;
+  opacity: 0.05;
+}
+
+.header {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 32px;
+  height: 88px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.badge {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #262626, #121212);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.35), 0 10px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge .crest {
+  width: 66px;
+  height: 66px;
+  color: var(--accent);
+}
+
+.badge img.crest {
+  width: 62px;
+  height: 62px;
+  image-rendering: pixelated;
+}
+
+.state {
+  font-weight: 800;
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.state small {
+  display: block;
+  margin-top: 10px;
+  font: 500 14px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.title {
+  text-align: right;
+}
+
+.title b {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 21px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.title span {
+  display: block;
+  margin-top: 10px;
+  font: 500 13px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 2px;
+  color: rgba(255, 255, 255, 0.55);
+  text-transform: uppercase;
+}
+
+.bar {
+  position: absolute;
+  left: 40px;
+  top: 132px;
+  height: 4px;
+  width: 640px;
+  background: linear-gradient(90deg, var(--accent), var(--accent) 70%, transparent);
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  right: -120px;
+  top: 0;
+  width: 110px;
+  height: 4px;
+  background: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 16px);
+  opacity: 0.7;
+}
+
+.photo {
+  position: absolute;
+  left: 40px;
+  top: 156px;
+  width: 248px;
+  height: 306px;
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    radial-gradient(80% 70% at 50% 100%, var(--accent-soft) 0%, transparent 70%),
+    linear-gradient(180deg, #2a2a2a, #161616);
+  background-size: 16px 16px, 16px 16px, 100% 100%, 100% 100%;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+}
+
+.photo img {
+  position: absolute;
+  left: -15%;
+  top: -4%;
+  width: 130%;
+  height: 130%;
+  object-fit: cover;
+}
+
+.photo .silhouette {
+  position: absolute;
+  left: 50%;
+  bottom: -10px;
+  width: 210px;
+  height: 280px;
+  transform: translateX(-50%);
+  background: radial-gradient(circle at 50% 34%, rgba(255, 255, 255, 0.18) 0 54px, transparent 55px),
+    radial-gradient(ellipse 102px 88px at 50% 100%, rgba(255, 255, 255, 0.18) 0 100%, transparent 100%);
+}
+
+.corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-color: var(--accent);
+  border-style: solid;
+  border-width: 0;
+}
+
+.corner.tl { left: 30px; top: 146px; border-top-width: 4px; border-left-width: 4px; }
+.corner.tr { left: 272px; top: 146px; border-top-width: 4px; border-right-width: 4px; }
+.corner.bl { left: 30px; top: 446px; border-bottom-width: 4px; border-left-width: 4px; }
+.corner.br { left: 272px; top: 446px; border-bottom-width: 4px; border-right-width: 4px; }
+
+.signature {
+  position: absolute;
+  left: 46px;
+  top: 478px;
+  width: 236px;
+  font: 42px 'Segoe Script', 'Brush Script MT', 'Lucida Handwriting', cursive;
+  color: #fff;
+  white-space: nowrap;
+  transform-origin: left center;
+  opacity: 0.9;
+}
+
+.number {
+  position: absolute;
+  left: 320px;
+  top: 152px;
+}
+
+.number label,
+.field label {
+  display: block;
+  font: 500 13px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 4px;
+}
+
+.number b {
+  display: block;
+  font: 700 42px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 1px;
+  color: var(--accent);
+}
+
+.fields {
+  position: absolute;
+  left: 320px;
+  top: 240px;
+  width: 510px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 24px;
+}
+
+.field {
+  min-width: 0;
+}
+
+.field.wide {
+  grid-column: span 2;
+}
+
+.field b {
+  display: block;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -0.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.field.accent b {
+  color: var(--accent);
+}
+
+.foil {
+  position: absolute;
+  right: 40px;
+  top: 156px;
+  width: 126px;
+  height: 306px;
+  border-radius: 14px;
+  overflow: hidden;
+  background:
+    conic-gradient(from calc(var(--tx) * 160deg + var(--ty) * 90deg) at 50% 40%, #fff3b0, #fbc434, #ffa347, #ff7ab8, #8fe3ff, #b6ff8f, #fff3b0);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  opacity: calc(0.5 + var(--glare) * 0.8);
+}
+
+.foil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.08) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.08) 0 2px, transparent 2px 8px);
+  mix-blend-mode: multiply;
+}
+
+.foil .ghost {
+  position: absolute;
+  left: -30%;
+  top: 18px;
+  width: 160%;
+  height: 190px;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.4);
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+.foil .mark {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  width: 76px;
+  height: 76px;
+  transform: translateX(-50%);
+  color: #000;
+  filter: grayscale(1) brightness(0.5);
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+.mrz {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 26px;
+  font: 500 22px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 12.4px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.42);
+  white-space: pre;
+  overflow: hidden;
+}
+
+.holo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  opacity: var(--glare);
+  background:
+    radial-gradient(circle at calc(70% + var(--tx) * 30%) calc(30% + var(--ty) * 30%), rgba(255, 255, 255, 0.95) 0 40px, transparent 220px),
+    linear-gradient(calc(110deg + var(--tx) * 40deg),
+      rgba(255, 210, 60, 0) 0%,
+      rgba(255, 210, 60, 0.5) 25%,
+      rgba(255, 140, 70, 0.45) 45%,
+      rgba(140, 220, 255, 0.45) 65%,
+      rgba(255, 210, 60, 0) 100%);
+  background-size: 100% 100%, 260% 260%;
+  background-position: 0 0, calc(50% + var(--tx) * 60%) calc(50% + var(--ty) * 60%);
+}
+
+.label {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 30px;
+  height: 214px;
+  background: #fbfaf6;
+  border-radius: 6px;
+  box-shadow: 0 2px 0 rgba(32, 37, 44, 0.12), 0 6px 16px rgba(32, 37, 44, 0.12);
+  padding: 12px 16px 14px;
+  color: #141414;
+}
+
+.label header {
+  display: flex;
+  justify-content: space-between;
+  font: 700 13px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #141414;
+}
+
+.label canvas {
+  display: block;
+  width: 100%;
+  height: 150px;
+}
+
+.print {
+  position: absolute;
+  left: 40px;
+  right: 290px;
+  top: 296px;
+}
+
+.print h3 {
+  font-weight: 900;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.print .grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 22px;
+  margin-bottom: 14px;
+}
+
+.print .field label {
+  color: rgba(32, 37, 44, 0.6);
+}
+
+.print .field b {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.legal {
+  font-size: 14px;
+  line-height: 1.45;
+  color: rgba(32, 37, 44, 0.78);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stamp {
+  position: absolute;
+  right: 56px;
+  top: 282px;
+  width: 210px;
+  height: 210px;
+  transform: rotate(-10deg);
+  color: var(--accent);
+  opacity: 0.55;
+}
+
+.barcode {
+  position: absolute;
+  left: 40px;
+  bottom: 30px;
+}
+
+.barcode canvas {
+  display: block;
+  width: 440px;
+  height: 58px;
+}
+
+.barcode span {
+  display: block;
+  margin-top: 6px;
+  font: 700 18px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 8px;
+}
+
+.dd {
+  position: absolute;
+  left: 520px;
+  bottom: 34px;
+  font: 500 13px 'Commit Mono', Consolas, monospace;
+  letter-spacing: 1.5px;
+  color: rgba(32, 37, 44, 0.7);
+}
+
+.dd b {
+  display: block;
+  margin-top: 4px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--print);
+}
