@@ -15,7 +15,10 @@
     "hands_full": "Hänellä on kädet täynnä.",
     "unknown_card": "Tuntematon korttityyppi.",
     "card_issued": "Kortti myönnetty.",
-    "card_not_issued": "Korttia ei voitu myöntää."
+    "card_not_issued": "Korttia ei voitu myöntää.",
+    "photo_updated": "Henkilökorttikuva päivitetty.",
+    "photo_failed": "Kuvaa ei voitu ottaa.",
+    "cleanup_done": "Poistettiin %s käyttämätöntä kuvaa."
   },
   "prompt": {
     "show": "Näytä",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Myönnä pelaajalle henkilökortti",
     "target": "Pelaajan palvelin-ID",
-    "card": "Kortin esineen nimi"
+    "card": "Kortin esineen nimi",
+    "idcardphoto": "Ota pelaajalle uusi henkilökorttikuva",
+    "idcardcleanup": "Poista käyttämättömät henkilökorttikuvat"
   }
 }

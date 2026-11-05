@@ -15,7 +15,13 @@ Physical ID cards for Qbox. The card is a real prop in the player's hand. Its fr
 - qbx_core
 - ox_inventory
 
-The `qbx_idcard_photos` table (`sql/schema.sql`) is created on first start.
+The three tables in `sql/schema.sql` are created on first start. `qbx_idcard_photo_store` stores each unique WebP/JPEG once as binary bytes, deduplicated by SHA-256. `qbx_idcard_cards` holds immutable card-to-photo references and `qbx_idcard_profiles` holds each character's current photo. Inventory metadata contains only a photo ID.
+
+New cards reuse the character's current photo. Admins can retake it with `/idcardphoto [id]` or the server export `updatePhoto(source)`; existing cards keep their original photo. `photos.retakeOnIssue` opts into a retake for each newly issued card. Viewers download photos separately through an authorized, rate-limited callback, with bounded client and server caches.
+
+Unused photos are removed after the configured grace period (60 minutes), every 24 hours or with `/idcardcleanup`. Neither cards nor character profiles may reference a photo being removed. Configure this and the storage provider in `configs/server.lua`; no external image host is required.
+
+Upgrading the earlier in-hand version: keep `qbx_idcard_photos`. Its rows are imported lazily when the corresponding card is used; PNG or oversized legacy images are re-encoded by the owner's client before validation and storage. Failed conversions retain the old row for retry. The old table is never dropped automatically. Original inventory `mugShot` photos are imported on first use too.
 
 ## Items
 

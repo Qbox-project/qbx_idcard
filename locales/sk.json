@@ -15,7 +15,10 @@
     "hands_full": "Má plné ruky.",
     "unknown_card": "Neznámy typ preukazu.",
     "card_issued": "Preukaz vydaný.",
-    "card_not_issued": "Preukaz sa nepodarilo vydať."
+    "card_not_issued": "Preukaz sa nepodarilo vydať.",
+    "photo_updated": "Fotka na preukaz aktualizovaná.",
+    "photo_failed": "Fotku sa nepodarilo urobiť.",
+    "cleanup_done": "Zmazané nepoužité fotky: %s."
   },
   "prompt": {
     "show": "Ukázať",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Vydať hráčovi preukaz",
     "target": "ID hráča na serveri",
-    "card": "Názov predmetu preukazu"
+    "card": "Názov predmetu preukazu",
+    "idcardphoto": "Znova odfotiť hráča na preukaz",
+    "idcardcleanup": "Zmazať nepoužité fotky preukazov"
   }
 }

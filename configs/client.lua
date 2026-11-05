@@ -1,4 +1,5 @@
 return {
+    photoCache = 32,
     viewDistance = 25.0,
     giveDistance = 2.0,
 

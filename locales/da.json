@@ -15,7 +15,10 @@
     "hands_full": "De har hænderne fulde.",
     "unknown_card": "Ukendt korttype.",
     "card_issued": "Kort udstedt.",
-    "card_not_issued": "Kortet kunne ikke udstedes."
+    "card_not_issued": "Kortet kunne ikke udstedes.",
+    "photo_updated": "ID-foto opdateret.",
+    "photo_failed": "Kunne ikke tage fotoet.",
+    "cleanup_done": "Fjernede %s ubrugte fotos."
   },
   "prompt": {
     "show": "Vis",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Udsted et ID-kort til en spiller",
     "target": "Spillerens server-id",
-    "card": "Kortets item-navn"
+    "card": "Kortets item-navn",
+    "idcardphoto": "Tag et nyt ID-foto af en spiller",
+    "idcardcleanup": "Fjern ID-fotos som intet kort bruger"
   }
 }

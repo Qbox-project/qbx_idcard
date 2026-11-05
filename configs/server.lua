@@ -1,4 +1,10 @@
 return {
+    photos = {
+        provider = 'mysql',
+        retakeOnIssue = false,
+        cleanup = { intervalHours = 24, graceMinutes = 60 },
+    },
+
     offerTime = 10000,
 
     tolerance = {

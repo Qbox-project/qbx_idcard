@@ -15,7 +15,10 @@
     "hands_full": "Diegene heeft zijn handen vol.",
     "unknown_card": "Onbekend kaarttype.",
     "card_issued": "Kaart uitgegeven.",
-    "card_not_issued": "Kaart kon niet worden uitgegeven."
+    "card_not_issued": "Kaart kon niet worden uitgegeven.",
+    "photo_updated": "ID-foto bijgewerkt.",
+    "photo_failed": "Kon de foto niet maken.",
+    "cleanup_done": "%s ongebruikte foto's verwijderd."
   },
   "prompt": {
     "show": "Tonen",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Een ID-kaart aan een speler uitgeven",
     "target": "Server-ID van de speler",
-    "card": "Itemnaam van de kaart"
+    "card": "Itemnaam van de kaart",
+    "idcardphoto": "Maak een nieuwe ID-foto van een speler",
+    "idcardcleanup": "Verwijder ongebruikte ID-foto's"
   }
 }

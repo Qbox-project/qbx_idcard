@@ -15,7 +15,10 @@
     "hands_full": "Elleri dolu.",
     "unknown_card": "Bilinmeyen kart türü.",
     "card_issued": "Kart çıkarıldı.",
-    "card_not_issued": "Kart çıkarılamadı."
+    "card_not_issued": "Kart çıkarılamadı.",
+    "photo_updated": "Kimlik fotoğrafı güncellendi.",
+    "photo_failed": "Fotoğraf çekilemedi.",
+    "cleanup_done": "%s kullanılmayan fotoğraf silindi."
   },
   "prompt": {
     "show": "Göster",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Bir oyuncuya kimlik kartı çıkar",
     "target": "Oyuncunun sunucu kimliği",
-    "card": "Kart eşyasının adı"
+    "card": "Kart eşyasının adı",
+    "idcardphoto": "Oyuncunun kimlik fotoğrafını yeniden çek",
+    "idcardcleanup": "Kullanılmayan kimlik fotoğraflarını sil"
   }
 }

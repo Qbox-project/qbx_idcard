@@ -8,6 +8,7 @@ description 'Physical ID cards and licenses shown in hand'
 version '1.0.0'
 
 ui_page 'web/index.html'
+nui_callback_strict_mode 'true'
 
 ox_lib 'locale'
 

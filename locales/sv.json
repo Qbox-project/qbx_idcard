@@ -15,7 +15,10 @@
     "hands_full": "Personen har händerna fulla.",
     "unknown_card": "Okänd korttyp.",
     "card_issued": "Kort utfärdat.",
-    "card_not_issued": "Kortet kunde inte utfärdas."
+    "card_not_issued": "Kortet kunde inte utfärdas.",
+    "photo_updated": "ID-foto uppdaterat.",
+    "photo_failed": "Kunde inte ta fotot.",
+    "cleanup_done": "Tog bort %s oanvända foton."
   },
   "prompt": {
     "show": "Visa",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Utfärda ett ID-kort till en spelare",
     "target": "Spelarens server-id",
-    "card": "Kortets föremålsnamn"
+    "card": "Kortets föremålsnamn",
+    "idcardphoto": "Ta ett nytt ID-foto av en spelare",
+    "idcardcleanup": "Ta bort ID-foton som inget kort använder"
   }
 }

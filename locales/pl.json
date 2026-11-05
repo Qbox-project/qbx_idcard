@@ -15,7 +15,10 @@
     "hands_full": "Ta osoba ma zajęte ręce.",
     "unknown_card": "Nieznany typ karty.",
     "card_issued": "Karta wydana.",
-    "card_not_issued": "Nie udało się wydać karty."
+    "card_not_issued": "Nie udało się wydać karty.",
+    "photo_updated": "Zdjęcie do dokumentu zaktualizowane.",
+    "photo_failed": "Nie udało się zrobić zdjęcia.",
+    "cleanup_done": "Usunięto nieużywane zdjęcia: %s."
   },
   "prompt": {
     "show": "Pokaż",
@@ -36,6 +39,8 @@
   "command": {
     "issueid": "Wydaj graczowi dowód",
     "target": "ID gracza na serwerze",
-    "card": "Nazwa przedmiotu karty"
+    "card": "Nazwa przedmiotu karty",
+    "idcardphoto": "Zrób graczowi nowe zdjęcie do dokumentu",
+    "idcardcleanup": "Usuń nieużywane zdjęcia dokumentów"
   }
 }

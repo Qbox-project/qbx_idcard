@@ -17,6 +17,7 @@ local WINDOW_SWAP_MS <const> = 820
 ---@field holder integer
 ---@field name string
 ---@field slot integer
+---@field photoId integer?
 ---@field cardId string
 ---@field card table
 ---@field pose string
@@ -38,6 +39,25 @@ local last = {}
 ---@type table<integer, { pose: string, back: boolean }>
 local queuedPose = {}
 local watching = false
+local photoBudgets = {}
+
+function shows.photoBudget(src)
+    local now = GetGameTimer()
+    local entry = photoBudgets[src]
+    if not entry then
+        entry = { tokens = 8, at = now }
+        photoBudgets[src] = entry
+    end
+
+    entry.tokens = math.min(8, entry.tokens + math.max(0, now - entry.at) * 0.008)
+    entry.at = now
+    if entry.tokens < 1 then return false end
+
+    entry.tokens = entry.tokens - 1
+
+    return true
+end
+
 
 ---@param name string
 ---@return string
@@ -322,7 +342,7 @@ end
 ---@param slot integer
 ---@param metadata table
 function shows.use(src, name, slot, metadata)
-    if not cards.exists(name) or not shows.free(src) then return end
+    if not photos.ready() or not cards.exists(name) or not shows.free(src) then return end
 
     if not metadata.cardId then
         metadata = cards.stamp(src, name, slot)
@@ -332,6 +352,12 @@ function shows.use(src, name, slot, metadata)
     end
 
     if not shows.free(src) then return end
+
+    local photoId = cards.photoId(src, metadata)
+    if not shows.free(src) then return end
+
+    local item = bridge.getSlot(src, slot)
+    if not item or item.name ~= name or item.metadata.cardId ~= metadata.cardId then return end
 
     local token = lib.string.random('................')
 
@@ -343,6 +369,7 @@ function shows.use(src, name, slot, metadata)
         name = name,
         slot = slot,
         cardId = metadata.cardId,
+        photoId = photoId,
         card = cards.payload(name, metadata),
         pose = 'hold',
         back = false,
@@ -456,18 +483,31 @@ end
 
 ---@param src integer
 ---@param token string
----@return { ok: boolean, reason?: string, holder?: integer, card?: table, cardId?: string, photo?: string }
+---@return { ok: boolean, reason?: string, holder?: integer, card?: table, cardId?: string, photoId?: integer }
 function shows.card(src, token)
     local show = active[token]
     if not show then return { ok = false, reason = 'not_found' } end
 
     if not near(src, show.holder, config.tolerance.view) then return { ok = false, reason = 'too_far' } end
 
-    return { ok = true, holder = show.holder, card = show.card, cardId = show.cardId, photo = photos.get(show.cardId) }
+    return { ok = true, holder = show.holder, card = show.card, cardId = show.cardId, photoId = show.photoId }
 end
 
 ---@param token string
 ---@return boolean
+function shows.photo(src, token, photoId)
+    local show = active[token]
+    if not show or show.photoId ~= photoId then return { ok = false, reason = 'not_found' } end
+
+    if not near(src, show.holder, config.tolerance.view) then return { ok = false, reason = 'too_far' } end
+
+    local holder, budget = show.holder, photoBudgets[src]
+    local photo = photos.get(photoId)
+    if active[token] ~= show or show.holder ~= holder or photoBudgets[src] ~= budget or not near(src, holder, config.tolerance.view) then return { ok = false, reason = 'too_far' } end
+
+    return photo and { ok = true, photo = photo } or { ok = false, reason = 'missing' }
+end
+
 function shows.exists(token)
     return active[token] ~= nil
 end
@@ -475,6 +515,7 @@ end
 ---@param src integer
 function shows.drop(src)
     offers[src] = nil
+    photoBudgets[src] = nil
     last[src] = nil
     incoming[src] = nil
     queuedPose[src] = nil
