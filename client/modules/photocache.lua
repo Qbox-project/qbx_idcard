@@ -5,16 +5,16 @@ local photocache = {}
 local PHOTO_EVENT <const> = ('%s:server:photo'):format(cache.resource)
 local RETRY_MS <const> = 3000
 
----@type table<integer, string>
+---@type table<integer|string, string>
 local entries = {}
----@type integer[]
+---@type (integer|string)[]
 local order = {}
----@type table<integer, promise>
+---@type table<integer|string, promise>
 local loading = {}
----@type table<integer, integer>
+---@type table<integer|string, integer>
 local failedAt = {}
 
----@param id integer
+---@param id integer|string
 local function touch(id)
     for i = #order, 1, -1 do
         if order[i] == id then
@@ -28,7 +28,7 @@ local function touch(id)
     order[#order + 1] = id
 end
 
----@param id integer
+---@param id integer|string
 ---@param photo string
 local function remember(id, photo)
     entries[id] = photo
@@ -47,39 +47,57 @@ function photocache.peek(id)
 end
 
 ---@param token string
----@param id integer
+---@param id integer?
 ---@return string?
 function photocache.get(token, id)
-    local cached = entries[id]
+    local key = id or token
+    local cached = entries[key]
 
     if cached then
-        touch(id)
+        touch(key)
 
         return cached
     end
 
-    local pending = loading[id]
+    local pending = loading[key]
     if pending then return Citizen.Await(pending) end
 
-    if failedAt[id] and GetGameTimer() - failedAt[id] < RETRY_MS then return end
+    if failedAt[key] and GetGameTimer() - failedAt[key] < RETRY_MS then return end
 
     pending = promise.new()
-    loading[id] = pending
+    loading[key] = pending
 
     local ok, result = pcall(lib.callback.await, PHOTO_EVENT, false, token, id)
+    if loading[key] ~= pending then return end
+
     local photo = ok and type(result) == 'table' and result.ok and type(result.photo) == 'string' and result.photo or nil
 
     if photo then
-        failedAt[id] = nil
-        remember(id, photo)
+        failedAt[key] = nil
+        remember(key, photo)
     else
-        failedAt[id] = GetGameTimer()
+        failedAt[key] = GetGameTimer()
     end
 
-    loading[id] = nil
+    loading[key] = nil
     pending:resolve(photo)
 
     return photo
+end
+
+---@param token string
+function photocache.forget(token)
+    entries[token] = nil
+    failedAt[token] = nil
+    local pending = loading[token]
+    loading[token] = nil
+    if pending then pending:resolve(nil) end
+
+    for i = #order, 1, -1 do
+        if order[i] == token then table.remove(order, i) end
+
+    end
+
 end
 
 function photocache.clear()

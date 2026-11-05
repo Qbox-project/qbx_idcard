@@ -18,6 +18,7 @@ local WINDOW_SWAP_MS <const> = 820
 ---@field name string
 ---@field slot integer
 ---@field photoId integer?
+---@field legacyPhoto string?
 ---@field cardId string
 ---@field card table
 ---@field pose string
@@ -353,7 +354,7 @@ function shows.use(src, name, slot, metadata)
 
     if not shows.free(src) then return end
 
-    local photoId = cards.photoId(src, metadata)
+    local photoId, legacyPhoto = cards.photoId(src, metadata)
     if not shows.free(src) then return end
 
     local item = bridge.getSlot(src, slot)
@@ -370,6 +371,7 @@ function shows.use(src, name, slot, metadata)
         slot = slot,
         cardId = metadata.cardId,
         photoId = photoId,
+        legacyPhoto = legacyPhoto,
         card = cards.payload(name, metadata),
         pose = 'hold',
         back = false,
@@ -490,19 +492,19 @@ function shows.card(src, token)
 
     if not near(src, show.holder, config.tolerance.view) then return { ok = false, reason = 'too_far' } end
 
-    return { ok = true, holder = show.holder, card = show.card, cardId = show.cardId, photoId = show.photoId }
+    return { ok = true, holder = show.holder, card = show.card, cardId = show.cardId, photoId = show.photoId, legacyPhoto = show.legacyPhoto ~= nil }
 end
 
 ---@param token string
 ---@return boolean
 function shows.photo(src, token, photoId)
     local show = active[token]
-    if not show or show.photoId ~= photoId then return { ok = false, reason = 'not_found' } end
+    if not show or show.photoId ~= photoId or (not photoId and not show.legacyPhoto) then return { ok = false, reason = 'not_found' } end
 
     if not near(src, show.holder, config.tolerance.view) then return { ok = false, reason = 'too_far' } end
 
     local holder, budget = show.holder, photoBudgets[src]
-    local photo = photos.get(photoId)
+    local photo = photoId and photos.get(photoId) or show.legacyPhoto
     if active[token] ~= show or show.holder ~= holder or photoBudgets[src] ~= budget or not near(src, holder, config.tolerance.view) then return { ok = false, reason = 'too_far' } end
 
     return photo and { ok = true, photo = photo } or { ok = false, reason = 'missing' }

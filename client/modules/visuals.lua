@@ -39,7 +39,7 @@ local slots = {}
 local holders = {}
 ---@type table<integer, IdCardVisual>
 local active = {}
----@type table<string, { holder: integer, card: table, photoId: integer? }>
+---@type table<string, { holder: integer, card: table, photoId: integer?, legacyPhoto: boolean? }>
 local cardData = {}
 ---@type table<string, integer>
 local failedAt = {}
@@ -85,7 +85,7 @@ end
 
 ---@param token string
 ---@param serverId integer
----@return { holder: integer, card: table, photoId: integer? }?, string?
+---@return { holder: integer, card: table, photoId: integer?, legacyPhoto: boolean? }?, string?
 local function fetchCard(token, serverId)
     local cached = cardData[token]
     if cached and cached.holder == serverId then return cached end
@@ -104,7 +104,7 @@ local function fetchCard(token, serverId)
         return nil, type(result) == 'table' and result.reason or nil
     end
 
-    cardData[token] = { holder = serverId, card = result.card, photoId = type(result.photoId) == 'number' and result.photoId or nil }
+    cardData[token] = { holder = serverId, card = result.card, photoId = type(result.photoId) == 'number' and result.photoId or nil, legacyPhoto = result.legacyPhoto == true }
 
     return cardData[token]
 end
@@ -152,6 +152,7 @@ local function forget(token)
 
     cardData[token] = nil
     failedAt[token] = nil
+    photocache.forget(token)
 end
 
 ---@param slot IdCardSlot
@@ -202,7 +203,7 @@ local function build(serverId, state, ped)
     slot.rendered = false
     slot.dui:sendMessage({ action = 'card', card = data.card, photo = photo })
 
-    if data.photoId and not photo then
+    if (data.photoId or data.legacyPhoto) and not photo then
         local token, dui = state.token, slot.dui
 
         CreateThread(function()

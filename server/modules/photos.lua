@@ -168,7 +168,7 @@ function photos.inspect(data, legacy)
 
     local padding = body:sub(-2) == '==' and 2 or body:sub(-1) == '=' and 1 or 0
     local bytes = #body // 4 * 3 - padding
-    if bytes < MIN_BYTES or bytes > limit then return end
+    if bytes < (legacy and 1 or MIN_BYTES) or bytes > limit then return end
 
     local head = decode(body:sub(1, HEADER_CHARS))
     local width, height = webpSize(head, bytes)
@@ -224,7 +224,8 @@ function photos.get(id)
     local ok, body, mime = pcall(provider.get, id)
     local value = ok and body and mime and ('data:%s;base64,%s'):format(mime, body) or nil
 
-    remember(id, value or false)
+    if value then remember(id, value) end
+
     loading[id] = nil
     pending:resolve(value)
 
@@ -252,6 +253,17 @@ end
 function photos.setCurrent(citizenid, photoId)
     MySQL.insert.await(
         'INSERT INTO `qbx_idcard_profiles` (`citizenid`, `photo_id`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `photo_id` = VALUES(`photo_id`)',
+        { citizenid, photoId }
+    )
+end
+
+---@param citizenid string
+---@param photoId integer
+function photos.seedCurrent(citizenid, photoId)
+    if type(citizenid) ~= 'string' or citizenid == '' then return end
+
+    MySQL.insert.await(
+        'INSERT INTO `qbx_idcard_profiles` (`citizenid`, `photo_id`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `citizenid` = `citizenid`',
         { citizenid, photoId }
     )
 end
@@ -292,22 +304,37 @@ end
 ---@param imageURL any
 ---@return string?
 function photos.legacy(imageURL)
-    if type(imageURL) ~= 'string' or imageURL == '' then return end
+    if type(imageURL) ~= 'string' or imageURL == '' or #imageURL > MAX_LEGACY * 4 // 3 + 64 then return end
 
-    if photos.inspect(imageURL, true) then return imageURL end
+    if imageURL:match('^data:image/[%w.+-]+;base64,[%w%+/%s]+=?=?$')
+        and not imageURL:match('^data:image/svg') then return imageURL end
 
-    local name = imageURL:match('([%w_%-]+)%.png$') or imageURL:match('^([%w_%-]+)$')
-    local handle = name and io.open(('%s/web/mugshots/%s.png'):format(GetResourcePath(resource), name), 'rb')
+    local resourcePattern = resource:gsub('([^%w_])', '%%%1')
+    local path = imageURL:match('^https?://cfx%-nui%-' .. resourcePattern .. '/web/mugshots/(.+)$')
+        or imageURL:match('^nui://' .. resourcePattern .. '/web/mugshots/(.+)$')
+        or imageURL:match('^web/mugshots/(.+)$') or imageURL:match('^mugshots/(.+)$')
+        or (not imageURL:find('[/\\:]') and imageURL)
+    if not path then
+        if #imageURL <= 2048 and imageURL:match('^https?://[^%s]+$') then return imageURL end
+
+        return
+    end
+
+    local name, extension = path:match('^([%w_%-]+)%.([%a]+)$')
+    if not name and path:match('^[%w_%-]+$') then name, extension = path, 'png' end
+
+    extension = extension and extension:lower()
+    local mime = ({ png = 'png', jpg = 'jpeg', jpeg = 'jpeg', webp = 'webp' })[extension]
+    if not name or not mime then return end
+
+    local handle = io.open(('%s/web/mugshots/%s.%s'):format(GetResourcePath(resource), name, extension), 'rb')
     if not handle then return end
 
     local file = handle:read(MAX_LEGACY + 1)
     handle:close()
-
     if not file or #file > MAX_LEGACY then return end
 
-    local photo = 'data:image/png;base64,' .. encode(file)
-    if photos.inspect(photo, true) then return photo end
-
+    return ('data:image/%s;base64,%s'):format(mime, encode(file))
 end
 
 ---@return integer

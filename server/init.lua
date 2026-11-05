@@ -6,7 +6,7 @@ local shows = require 'server.modules.shows'
 
 local resource = cache.resource
 
-CreateThread(function()
+MySQL.ready(function()
     for statement in LoadResourceFile(resource, 'sql/schema.sql'):gmatch('[^;]+') do
         if statement:find('%S') then MySQL.query.await(statement) end
 

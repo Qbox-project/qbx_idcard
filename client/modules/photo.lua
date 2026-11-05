@@ -7,6 +7,7 @@ local MAX_SOURCE <const> = 768 * 1024
 ---@type table<integer, promise>
 local pending = {}
 local nextId = 0
+local ready = false
 
 ---@param handle integer
 ---@return boolean
@@ -44,8 +45,10 @@ end
 ---@param source? string
 ---@return string?
 function photo.capture(source)
+    if not ready and not pcall(lib.waitFor, function() return ready or nil end, nil, NUI_TIMEOUT) then return end
+
     if type(source) == 'string' then
-        if #source > MAX_SOURCE or not source:find('^data:image/') then return end
+        if #source > MAX_SOURCE or not (source:find('^data:image/') or source:match('^https?://')) then return end
 
         return encode({ source = source })
     end
@@ -66,6 +69,10 @@ function photo.capture(source)
     UnregisterPedheadshot(handle)
 
     return data
+end
+
+function photo.setReady()
+    ready = true
 end
 
 ---@param body any

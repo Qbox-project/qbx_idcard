@@ -47,8 +47,13 @@ end
 ---@param src integer
 ---@return string?
 local function capturePhoto(src, source)
+    local player = qbx:GetPlayer(src)
+    local citizenid = player and player.PlayerData.citizenid
+    if not citizenid then return end
+
     local ok, data = pcall(lib.callback.await, PHOTO_EVENT, src, source)
-    if ok and photos.inspect(data) then return data end
+    player = qbx:GetPlayer(src)
+    if ok and player and player.PlayerData.citizenid == citizenid and photos.inspect(data) then return data end
 
 end
 
@@ -116,6 +121,9 @@ local function issue(src, name)
     if not metadata or not bridge.canCarry(src, name, metadata) then return false end
 
     metadata.photoId = currentPhoto(src, metadata.citizenid, config.photos.retakeOnIssue)
+    local player = qbx:GetPlayer(src)
+    if not player or player.PlayerData.citizenid ~= metadata.citizenid then return false end
+
     if not bridge.addItem(src, name, metadata) then return false end
 
     photos.link(metadata.cardId, metadata.citizenid, metadata.photoId)
@@ -143,24 +151,34 @@ local function stamp(src, name, slot)
     local metadata = newMetadata(src, name)
     if not metadata then return end
 
-    local mugShot = bridge.getSlot(src, slot).metadata.mugShot
+    local original = bridge.getSlot(src, slot).metadata
+    for key, value in pairs(original) do metadata[key] = value end
+
+    local player = qbx:GetPlayer(src)
+    local ownsIdentity = player and metadata.citizenid == player.PlayerData.citizenid
+    metadata.description = ('%s %s'):format(metadata.firstname, metadata.lastname)
+    local holderCitizenid = player and player.PlayerData.citizenid
+    local mugShot = original.mugShot
     local old = photos.legacy(mugShot)
-    local converted = old and capturePhoto(src, old)
-    if old and not converted then return end
+    local converted = old and (photos.inspect(old) and old or capturePhoto(src, old))
+    if mugShot and not old then return end
 
-    metadata.photoId = converted and photos.store(converted) or currentPhoto(src, metadata.citizenid)
-    if metadata.photoId and not photos.current(metadata.citizenid) then photos.setCurrent(metadata.citizenid, metadata.photoId) end
+    metadata.photoId = converted and photos.store(converted)
+    if not mugShot and ownsIdentity then metadata.photoId = currentPhoto(src, metadata.citizenid) end
 
-    if not blank(src, name, slot) then return end
+    if metadata.photoId and ownsIdentity then photos.seedCurrent(metadata.citizenid, metadata.photoId) end
+
+    player = qbx:GetPlayer(src)
+    if not player or player.PlayerData.citizenid ~= holderCitizenid or not blank(src, name, slot)
+        or bridge.getSlot(src, slot).metadata.citizenid ~= original.citizenid
+        or bridge.getSlot(src, slot).metadata.mugShot ~= mugShot then return end
 
     local merged = bridge.getSlot(src, slot).metadata
     for key, value in pairs(metadata) do merged[key] = value end
 
-    merged.mugShot = nil
-
     if not bridge.setMetadata(src, slot, merged) then return end
 
-    photos.link(metadata.cardId, metadata.citizenid, metadata.photoId)
+    if metadata.photoId or not mugShot then photos.link(metadata.cardId, metadata.citizenid, metadata.photoId) end
 
     return merged
 end
@@ -264,50 +282,61 @@ function cards.drop(src)
     locked[src] = nil
 end
 
--- Import a previously-issued SQL photo before looking at the character's current photo.
--- A failed conversion leaves the old row intact and never substitutes a newer headshot.
+---@param src integer
+---@param metadata table
+---@return integer?, string?
 local function photoIdForCard(src, metadata)
-    local photoId, known = photos.forCard(metadata.cardId)
+    local photoId = photos.forCard(metadata.cardId)
     if photoId then return photoId end
 
-    if known then
-        photoId = photos.current(metadata.citizenid)
-        if photoId then photos.fill(metadata.cardId, photoId) end
-
-        return photos.forCard(metadata.cardId)
-    end
-
-
     local old = photos.oldCard(metadata.cardId)
-    if old then
-        local data = photos.inspect(old.photo) and old.photo or nil
-        if not data and photos.inspect(old.photo, true) then data = capturePhoto(src, old.photo) end
+    local source = old and old.photo or metadata.mugShot
+    if source then
+        local original = photos.legacy(source)
+        if not original then return end
 
-        photoId = data and photos.store(data)
-        if not photoId then return end
+        local data = photos.inspect(original) and original or capturePhoto(src, original)
+        local ok
+        if data then ok, photoId = pcall(photos.store, data) end
 
-        photos.link(metadata.cardId, old.citizenid, photoId)
-        if not photos.current(old.citizenid) then photos.setCurrent(old.citizenid, photoId) end
+        if not ok or not photoId then return nil, original end
 
-        return photos.forCard(metadata.cardId)
+        if not photos.link(metadata.cardId, old and old.citizenid or metadata.citizenid, photoId) then return nil, original end
+
+        if not pcall(photos.fill, metadata.cardId, photoId) then return nil, original end
+
+        pcall(photos.seedCurrent, old and old.citizenid or metadata.citizenid, photoId)
+
+        return (photos.forCard(metadata.cardId))
     end
 
-    photoId = photos.current(metadata.citizenid)
-    photos.link(metadata.cardId, metadata.citizenid, photoId)
+    photoId = metadata.photoId
+    if not photoId then
+        local player = qbx:GetPlayer(src)
+        if not player or player.PlayerData.citizenid ~= metadata.citizenid then return end
 
-    return photos.forCard(metadata.cardId)
+        photoId = currentPhoto(src, metadata.citizenid)
+    end
+
+    if not photoId or not photos.link(metadata.cardId, metadata.citizenid, photoId) then return end
+
+    photos.fill(metadata.cardId, photoId)
+
+    return (photos.forCard(metadata.cardId))
 end
 
 function cards.photoId(src, metadata)
-    if locked[src] then return end
+    if not photos.ready() or locked[src] then return end
 
     locked[src] = true
-    local ok, photoId = pcall(photoIdForCard, src, metadata)
+    local ok, photoId, legacy = pcall(photoIdForCard, src, metadata)
     locked[src] = nil
 
     if not ok then lib.print.error(photoId) end
 
-    return ok and photoId or nil
+    if ok then return photoId, legacy end
+
+    return nil, photos.legacy(metadata.mugShot)
 end
 
 function cards.retake(src)

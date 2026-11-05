@@ -61,8 +61,9 @@ lib.callback.register(event('server:card'), function(src, token)
 end)
 
 lib.callback.register(event('server:photo'), function(src, token, photoId)
-    photoId = type(photoId) == 'number' and math.tointeger(photoId)
-    if type(token) ~= 'string' or #token ~= TOKEN_LENGTH or not photoId or photoId < 1 or photoId > 4294967295 then return { ok = false, reason = 'bad_request' } end
+    if photoId ~= nil and (type(photoId) ~= 'number' or not math.tointeger(photoId) or photoId < 1 or photoId > 4294967295) then return { ok = false, reason = 'bad_request' } end
+
+    if type(token) ~= 'string' or #token ~= TOKEN_LENGTH then return { ok = false, reason = 'bad_request' } end
 
     if not shows.photoBudget(src) then return { ok = false, reason = 'cooldown' } end
 
@@ -80,7 +81,14 @@ end)
 ---@param items string|string[]
 ---@return string[]
 local function cardList(items)
-    return type(items) == 'table' and items or { items }
+    if type(items) == 'string' then return { items } end
+
+    local list = {}
+    if type(items) ~= 'table' then return list end
+
+    for _, name in pairs(items) do list[#list + 1] = name end
+
+    return list
 end
 
 exports('GetMetaLicense', function(src, items)

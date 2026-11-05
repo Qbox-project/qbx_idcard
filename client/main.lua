@@ -28,6 +28,11 @@ RegisterNUICallback('cardRendered', function(body, cb)
 
 end)
 
+RegisterNUICallback('photoReady', function(_, cb)
+    photo.setReady()
+    cb(1)
+end)
+
 RegisterNUICallback('photo', function(body, cb)
     cb(1)
     photo.resolve(body)
